@@ -1,0 +1,1145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PML-Anyta | Personal Machine Learning Research</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #0a0a0f;
+        --bg2: #111118;
+        --bg3: #16161f;
+        --border: #22222e;
+        --border2: #2e2e3e;
+        --text: #e2e2f0;
+        --text2: #8888aa;
+        --text3: #55556a;
+        --purple: #7f77dd;
+        --teal: #1d9e75;
+        --amber: #ef9f27;
+        --coral: #d85a30;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* TOP BAR */
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        height: 52px;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg2);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--purple);
+      }
+
+      .logo span {
+        color: var(--text2);
+      }
+
+      .status-pill {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--teal);
+        background: #1d9e7512;
+        border: 1px solid #1d9e7528;
+        padding: 4px 12px;
+        border-radius: 20px;
+      }
+
+      .pulse {
+        width: 6px;
+        height: 6px;
+        background: var(--teal);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* LAYOUT */
+      .layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        min-height: calc(100vh - 52px);
+      }
+
+      /* SIDEBAR / TOC */
+      .sidebar {
+        border-right: 1px solid var(--border);
+        background: var(--bg2);
+        position: sticky;
+        top: 52px;
+        height: calc(100vh - 52px);
+        overflow-y: auto;
+        padding: 28px 0;
+      }
+
+      .toc-title {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 0 24px;
+        margin-bottom: 12px;
+      }
+
+      .toc-section {
+        margin-bottom: 24px;
+      }
+
+      .toc-group {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 6px 24px 4px;
+      }
+
+      .toc-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 24px;
+        font-size: 12.5px;
+        color: var(--text2);
+        text-decoration: none;
+        transition: all 0.15s;
+        border-left: 2px solid transparent;
+      }
+
+      .toc-link:hover {
+        color: var(--text);
+        background: var(--bg3);
+      }
+      .toc-link.active {
+        color: var(--purple);
+        border-left-color: var(--purple);
+        background: var(--bg3);
+      }
+
+      .toc-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .dot-done {
+        background: var(--teal);
+      }
+      .dot-active {
+        background: var(--purple);
+      }
+      .dot-pending {
+        background: var(--border2);
+      }
+      .dot-entry {
+        background: var(--amber);
+      }
+      .dot-info {
+        background: var(--text3);
+      }
+
+      /* DIVIDER */
+      .toc-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 12px 24px;
+      }
+
+      /* MAIN */
+      .main {
+        padding: 48px 56px;
+        max-width: 800px;
+      }
+
+      /* HERO */
+      .hero {
+        margin-bottom: 56px;
+      }
+
+      .hero-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: var(--purple);
+        letter-spacing: 1.2px;
+        margin-bottom: 14px;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+        margin-bottom: 16px;
+      }
+
+      .hero p {
+        font-size: 14.5px;
+        color: var(--text2);
+        max-width: 580px;
+        line-height: 1.75;
+        margin-bottom: 24px;
+      }
+
+      .hero-meta {
+        display: flex;
+        gap: 0;
+        flex-wrap: wrap;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        width: fit-content;
+      }
+
+      .meta-cell {
+        padding: 10px 20px;
+        border-right: 1px solid var(--border);
+      }
+
+      .meta-cell:last-child {
+        border-right: none;
+      }
+
+      .meta-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 3px;
+      }
+
+      .meta-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: var(--text);
+      }
+
+      /* SECTION */
+      .section {
+        margin-bottom: 56px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+
+      .section-header h2 {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        letter-spacing: 0.2px;
+      }
+
+      .section-anchor {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        color: var(--text3);
+      }
+
+      .section-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* ABSTRACT */
+      .abstract {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--purple);
+        border-radius: 0 8px 8px 0;
+        padding: 20px 24px;
+        font-size: 13.5px;
+        color: var(--text2);
+        line-height: 1.75;
+      }
+
+      /* PHASE TABLE */
+      .phase-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .phase-table th {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--text3);
+        text-align: left;
+        padding: 8px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .phase-table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        vertical-align: top;
+      }
+
+      .phase-table tr:last-child td {
+        border-bottom: none;
+      }
+      .phase-table tr:hover td {
+        background: var(--bg3);
+      }
+
+      .phase-id {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: var(--text3);
+      }
+
+      .phase-name {
+        font-weight: 500;
+        color: var(--text);
+      }
+      .phase-desc {
+        color: var(--text2);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      .badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 4px;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+
+      .badge-active {
+        background: #7f77dd18;
+        color: var(--purple);
+        border: 1px solid #7f77dd30;
+      }
+      .badge-upcoming {
+        background: transparent;
+        color: var(--text3);
+        border: 1px solid var(--border);
+      }
+      .badge-done {
+        background: #1d9e7518;
+        color: var(--teal);
+        border: 1px solid #1d9e7528;
+      }
+
+      /* TECH STACK */
+      .stack-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .stack-card {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px 18px;
+      }
+
+      .stack-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 6px;
+      }
+
+      .stack-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12.5px;
+        color: var(--purple);
+      }
+
+      .stack-desc {
+        font-size: 12px;
+        color: var(--text3);
+        margin-top: 4px;
+      }
+
+      /* TRAINING TOPICS */
+      .topic-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .topic-row {
+        display: grid;
+        grid-template-columns: 36px 1fr auto;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        transition: all 0.15s;
+      }
+
+      .topic-row:hover {
+        background: var(--bg3);
+        border-color: var(--border);
+      }
+
+      .topic-num {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        color: var(--text3);
+      }
+
+      .topic-name {
+        font-size: 13px;
+        color: var(--text2);
+      }
+      .topic-name.done {
+        color: var(--teal);
+      }
+      .topic-name.active {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      /* JOURNAL */
+      .journal-list {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .entry {
+        padding: 22px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .entry:last-child {
+        border-bottom: none;
+      }
+
+      .entry-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+
+      .entry-day {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        color: var(--purple);
+        letter-spacing: 0.5px;
+      }
+
+      .entry-date {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        color: var(--text3);
+      }
+
+      .entry h3 {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 8px;
+      }
+
+      .entry p {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.75;
+      }
+
+      .entry-tags {
+        display: flex;
+        gap: 6px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+
+      .tag {
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: var(--bg3);
+        color: var(--text3);
+        border: 1px solid var(--border);
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* SENTIMENT */
+      .sentiment-card {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px 24px;
+      }
+
+      .sentiment-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+
+      .sentiment-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .sentiment-label {
+        font-size: 11.5px;
+        color: var(--text2);
+        width: 80px;
+        flex-shrink: 0;
+      }
+
+      .sentiment-bar-wrap {
+        flex: 1;
+        height: 6px;
+        background: var(--border);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+
+      .sentiment-bar {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.5s;
+      }
+
+      .sentiment-val {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: var(--text3);
+        width: 30px;
+        text-align: right;
+      }
+
+      /* FOOTER */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 24px 56px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11.5px;
+        color: var(--text3);
+      }
+
+      footer a {
+        color: var(--purple);
+        text-decoration: none;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .main {
+          padding: 28px 20px;
+        }
+        .stack-grid {
+          grid-template-columns: 1fr;
+        }
+        footer {
+          flex-direction: column;
+          gap: 8px;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="logo">
+        PML-<span>Anyta</span>
+        <span style="color: var(--border2); margin: 0 8px">/</span>
+        <span style="color: var(--text3); font-size: 11px"
+          >Personal Machine Learning Research</span
+        >
+      </div>
+      <div class="status-pill">
+        <div class="pulse"></div>
+        Phase 01 — Active
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- SIDEBAR / TABLE OF CONTENTS -->
+      <aside class="sidebar">
+        <div class="toc-title">Table of Contents</div>
+
+        <div class="toc-section">
+          <div class="toc-group">Overview</div>
+          <a href="#abstract" class="toc-link active">
+            <div class="toc-dot dot-info"></div>
+            Abstract
+          </a>
+          <a href="#motivation" class="toc-link">
+            <div class="toc-dot dot-info"></div>
+            Motivation
+          </a>
+          <a href="#architecture" class="toc-link">
+            <div class="toc-dot dot-info"></div>
+            System Architecture
+          </a>
+        </div>
+
+        <div class="toc-divider"></div>
+
+        <div class="toc-section">
+          <div class="toc-group">Research Phases</div>
+          <a href="#phase1" class="toc-link">
+            <div class="toc-dot dot-active"></div>
+            Phase 1 — Data Collection
+          </a>
+          <a href="#phase2" class="toc-link">
+            <div class="toc-dot dot-pending"></div>
+            Phase 2 — Fine-tuning
+          </a>
+          <a href="#phase3" class="toc-link">
+            <div class="toc-dot dot-pending"></div>
+            Phase 3 — Voice Cloning
+          </a>
+          <a href="#phase4" class="toc-link">
+            <div class="toc-dot dot-pending"></div>
+            Phase 4 — Sentiment Layer
+          </a>
+          <a href="#phase5" class="toc-link">
+            <div class="toc-dot dot-pending"></div>
+            Phase 5 — Phone App
+          </a>
+        </div>
+
+        <div class="toc-divider"></div>
+
+        <div class="toc-section">
+          <div class="toc-group">Training Data</div>
+          <a href="#topics" class="toc-link">
+            <div class="toc-dot dot-info"></div>
+            Topic Coverage
+          </a>
+          <a href="#stack" class="toc-link">
+            <div class="toc-dot dot-info"></div>
+            Tech Stack
+          </a>
+          <a href="#sentiment" class="toc-link">
+            <div class="toc-dot dot-info"></div>
+            Sentiment Signals
+          </a>
+        </div>
+
+        <div class="toc-divider"></div>
+
+        <div class="toc-section">
+          <div class="toc-group">Daily Log</div>
+          <a href="#day001" class="toc-link">
+            <div class="toc-dot dot-entry"></div>
+            Day 001 — Project Setup
+          </a>
+          <!-- Add new day links here -->
+        </div>
+
+        <div class="toc-divider"></div>
+
+        <div class="toc-section">
+          <div class="toc-group">Resources</div>
+          <a
+            href="https://github.com/anytaaly/PML-anyta"
+            target="_blank"
+            class="toc-link"
+          >
+            <div class="toc-dot dot-info"></div>
+            GitHub Repository
+          </a>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="main">
+        <!-- HERO -->
+        <div class="hero">
+          <div class="hero-eyebrow">RESEARCH PROJECT — 2026</div>
+          <h1>Building a Personal<br />Machine Learning Digital Twin</h1>
+          <p>
+            A living AI model trained on my voice, knowledge, emotions and
+            experiences — that speaks like me, thinks like me, and updates every
+            day through biometric sentiment signals from my Apple Watch.
+          </p>
+          <div class="hero-meta">
+            <div class="meta-cell">
+              <div class="meta-label">Researcher</div>
+              <div class="meta-value">Anyta</div>
+            </div>
+            <div class="meta-cell">
+              <div class="meta-label">Started</div>
+              <div class="meta-value">Apr 2026</div>
+            </div>
+            <div class="meta-cell">
+              <div class="meta-label">Base Model</div>
+              <div class="meta-value">Llama 3.2 3B</div>
+            </div>
+            <div class="meta-cell">
+              <div class="meta-label">Status</div>
+              <div class="meta-value" style="color: var(--teal)">Active</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABSTRACT -->
+        <div class="section" id="abstract">
+          <div class="section-header">
+            <span class="section-anchor">#01</span>
+            <h2>Abstract</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="abstract">
+            This project documents the design and construction of a personal
+            language model (PLM) — a fine-tuned LLM trained exclusively on the
+            researcher's own voice, writing, beliefs, knowledge, and emotional
+            patterns. Unlike static digital twins, this system incorporates a
+            continuous learning pipeline driven by daily biometric sentiment
+            analysis from wearable devices, allowing the model to evolve as the
+            researcher evolves. The end goal is a deployed mobile application
+            capable of speaking, reasoning, and responding as the researcher in
+            real time.
+          </div>
+        </div>
+
+        <!-- MOTIVATION -->
+        <div class="section" id="motivation">
+          <div class="section-header">
+            <span class="section-anchor">#02</span>
+            <h2>Motivation</h2>
+            <div class="section-line"></div>
+          </div>
+          <p
+            style="
+              color: var(--text2);
+              font-size: 13.5px;
+              line-height: 1.8;
+              margin-bottom: 14px;
+            "
+          >
+            Most AI research builds tools for others. This project asks a
+            different question: what does it take to build an AI that
+            <em style="color: var(--text)">is</em> a specific person? Not a
+            simulation of a generic human, but a bounded model of one individual
+            — their knowledge gaps included, their uncertainty preserved, their
+            voice intact.
+          </p>
+          <p style="color: var(--text2); font-size: 13.5px; line-height: 1.8">
+            The secondary research contribution is the continuous learning
+            architecture — a pipeline that ingests daily sentiment data from
+            biometric sensors and fine-tunes the model incrementally, solving
+            the challenge of representing a person who changes over time without
+            catastrophic forgetting of their foundation.
+          </p>
+        </div>
+
+        <!-- ARCHITECTURE -->
+        <div class="section" id="architecture">
+          <div class="section-header">
+            <span class="section-anchor">#03</span>
+            <h2>System Architecture</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="stack-grid">
+            <div class="stack-card">
+              <div class="stack-label">Layer 1 — Audio</div>
+              <div class="stack-value">Whisper STT</div>
+              <div class="stack-desc">
+                Speech to text — transcribes incoming voice in real time
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-label">Layer 2 — Brain</div>
+              <div class="stack-value">Llama 3.2 3B + LoRA</div>
+              <div class="stack-desc">
+                Fine-tuned identity model — the core of the twin
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-label">Layer 3 — Voice</div>
+              <div class="stack-value">ElevenLabs TTS</div>
+              <div class="stack-desc">
+                Cloned voice — responds in researcher's actual voice
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-label">Layer 4 — Emotion</div>
+              <div class="stack-value">Apple Watch + HealthKit</div>
+              <div class="stack-desc">
+                Daily HRV, sleep, activity feeds sentiment pipeline
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PHASES -->
+        <div class="section" id="phase1">
+          <div class="section-header">
+            <span class="section-anchor">#04</span>
+            <h2>Research Phases</h2>
+            <div class="section-line"></div>
+          </div>
+          <table class="phase-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Phase</th>
+                <th>Description</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="phase1">
+                <td class="phase-id">P-01</td>
+                <td><div class="phase-name">Data Collection</div></td>
+                <td>
+                  <div class="phase-desc">
+                    Voice recordings, writing samples, Q&A across 8 identity
+                    topics. Minimum 500 training examples.
+                  </div>
+                </td>
+                <td><span class="badge badge-active">Active</span></td>
+              </tr>
+              <tr id="phase2">
+                <td class="phase-id">P-02</td>
+                <td><div class="phase-name">Fine-tuning</div></td>
+                <td>
+                  <div class="phase-desc">
+                    LoRA fine-tune on Llama 3.2 3B using Unsloth on Google
+                    Colab. Target loss &lt; 0.8.
+                  </div>
+                </td>
+                <td><span class="badge badge-upcoming">Upcoming</span></td>
+              </tr>
+              <tr id="phase3">
+                <td class="phase-id">P-03</td>
+                <td><div class="phase-name">Voice Cloning</div></td>
+                <td>
+                  <div class="phase-desc">
+                    Clone researcher voice using ElevenLabs. Integrate with TTS
+                    pipeline.
+                  </div>
+                </td>
+                <td><span class="badge badge-upcoming">Upcoming</span></td>
+              </tr>
+              <tr id="phase4">
+                <td class="phase-id">P-04</td>
+                <td><div class="phase-name">Sentiment Layer</div></td>
+                <td>
+                  <div class="phase-desc">
+                    Daily Apple Watch HRV + sleep data drives incremental LoRA
+                    updates. Continual learning without catastrophic forgetting.
+                  </div>
+                </td>
+                <td><span class="badge badge-upcoming">Upcoming</span></td>
+              </tr>
+              <tr id="phase5">
+                <td class="phase-id">P-05</td>
+                <td><div class="phase-name">Phone App</div></td>
+                <td>
+                  <div class="phase-desc">
+                    iOS app deployment. Real-time voice conversation. Access to
+                    researcher's calendar, email, contacts.
+                  </div>
+                </td>
+                <td><span class="badge badge-upcoming">Upcoming</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- TRAINING TOPICS -->
+        <div class="section" id="topics">
+          <div class="section-header">
+            <span class="section-anchor">#05</span>
+            <h2>Training Topic Coverage</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="topic-list">
+            <div class="topic-row">
+              <div class="topic-num">T-01</div>
+              <div class="topic-name active">Identity &amp; Core Values</div>
+              <span class="badge badge-active">In Progress</span>
+            </div>
+            <div class="topic-row">
+              <div class="topic-num">T-02</div>
+              <div class="topic-name">Beliefs &amp; Spirituality</div>
+              <span class="badge badge-upcoming">Pending</span>
+            </div>
+            <div class="topic-row">
+              <div class="topic-num">T-03</div>
+              <div class="topic-name">Relationships &amp; People</div>
+              <span class="badge badge-upcoming">Pending</span>
+            </div>
+            <div class="topic-row">
+              <div class="topic-num">T-04</div>
+              <div class="topic-name">Emotions, Fears &amp; Dreams</div>
+              <span class="badge badge-upcoming">Pending</span>
+            </div>
+            <div class="topic-row">
+              <div class="topic-num">T-05</div>
+              <div class="topic-name">Knowledge &amp; Expertise</div>
+              <span class="badge badge-upcoming">Pending</span>
+            </div>
+            <div class="topic-row">
+              <div class="topic-num">T-06</div>
+              <div class="topic-name">Vocabulary &amp; Speech Patterns</div>
+              <span class="badge badge-upcoming">Pending</span>
+            </div>
+            <div class="topic-row">
+              <div class="topic-num">T-07</div>
+              <div class="topic-name">Daily Life, Habits &amp; Opinions</div>
+              <span class="badge badge-upcoming">Pending</span>
+            </div>
+            <div class="topic-row">
+              <div class="topic-num">T-08</div>
+              <div class="topic-name">Memories &amp; Personal Stories</div>
+              <span class="badge badge-upcoming">Pending</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TECH STACK -->
+        <div class="section" id="stack">
+          <div class="section-header">
+            <span class="section-anchor">#06</span>
+            <h2>Tech Stack</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="stack-grid">
+            <div class="stack-card">
+              <div class="stack-label">Base Model</div>
+              <div class="stack-value">Llama 3.2 3B</div>
+              <div class="stack-desc">
+                Small enough for daily updates, capable enough for personality
+                capture
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-label">Fine-tuning Method</div>
+              <div class="stack-value">LoRA + Unsloth</div>
+              <div class="stack-desc">
+                2x faster, 70% less memory — runs free on Google Colab T4
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-label">Speech to Text</div>
+              <div class="stack-value">OpenAI Whisper</div>
+              <div class="stack-desc">
+                Transcribes voice notes and daily recordings
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-label">Voice Cloning</div>
+              <div class="stack-value">ElevenLabs</div>
+              <div class="stack-desc">
+                Clones researcher voice from sample recordings
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-label">Sentiment Input</div>
+              <div class="stack-value">Apple HealthKit API</div>
+              <div class="stack-desc">
+                HRV, sleep quality, activity — daily emotional state vector
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="stack-label">Compute</div>
+              <div class="stack-value">Google Colab + Mac</div>
+              <div class="stack-desc">
+                Free GPU for training, Mac for development and data prep
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SENTIMENT -->
+        <div class="section" id="sentiment">
+          <div class="section-header">
+            <span class="section-anchor">#07</span>
+            <h2>Sentiment Signal Sources</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="sentiment-card">
+            <p
+              style="
+                font-size: 12px;
+                color: var(--text3);
+                margin-bottom: 16px;
+                font-family: 'JetBrains Mono', monospace;
+              "
+            >
+              SAMPLE — today's emotional state vector
+            </p>
+            <div class="sentiment-row">
+              <div class="sentiment-label">Energy</div>
+              <div class="sentiment-bar-wrap">
+                <div
+                  class="sentiment-bar"
+                  style="width: 78%; background: var(--teal)"
+                ></div>
+              </div>
+              <div class="sentiment-val">0.78</div>
+            </div>
+            <div class="sentiment-row">
+              <div class="sentiment-label">Focus</div>
+              <div class="sentiment-bar-wrap">
+                <div
+                  class="sentiment-bar"
+                  style="width: 85%; background: var(--purple)"
+                ></div>
+              </div>
+              <div class="sentiment-val">0.85</div>
+            </div>
+            <div class="sentiment-row">
+              <div class="sentiment-label">Stress</div>
+              <div class="sentiment-bar-wrap">
+                <div
+                  class="sentiment-bar"
+                  style="width: 32%; background: var(--coral)"
+                ></div>
+              </div>
+              <div class="sentiment-val">0.32</div>
+            </div>
+            <div class="sentiment-row">
+              <div class="sentiment-label">Sleep</div>
+              <div class="sentiment-bar-wrap">
+                <div
+                  class="sentiment-bar"
+                  style="width: 71%; background: var(--amber)"
+                ></div>
+              </div>
+              <div class="sentiment-val">0.71</div>
+            </div>
+            <p style="font-size: 11px; color: var(--text3); margin-top: 16px">
+              Source: Apple Watch HRV + sleep tracking. Updated daily. Feeds
+              LoRA adapter update.
+            </p>
+          </div>
+        </div>
+
+        <!-- DAILY JOURNAL -->
+        <div class="section" id="day001">
+          <div class="section-header">
+            <span class="section-anchor">#08</span>
+            <h2>Daily Research Log</h2>
+            <div class="section-line"></div>
+          </div>
+          <div class="journal-list">
+            <div class="entry" id="day001">
+              <div class="entry-meta">
+                <span class="entry-day">DAY 001</span>
+                <span class="entry-date">April 2, 2026</span>
+              </div>
+              <h3>Project Infrastructure Setup</h3>
+              <p>
+                Initialized the PML-Anyta project. Set up local development
+                environment on Mac — Python 3.11, VS Code, virtual environment.
+                Created full project folder structure: journal, research, code,
+                data, docs. Connected local repo to GitHub. Resolved credential
+                conflict with secondary GitHub account. Project is now live and
+                version controlled.
+              </p>
+              <div class="entry-tags">
+                <span class="tag">setup</span>
+                <span class="tag">github</span>
+                <span class="tag">infrastructure</span>
+              </div>
+            </div>
+
+            <!-- PASTE NEW ENTRIES ABOVE THIS LINE -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <span>PML-Anyta Research Project — 2026</span>
+      <span
+        ><a href="https://github.com/anytaaly/PML-anyta" target="_blank"
+          >github.com/anytaaly/PML-anyta</a
+        ></span
+      >
+    </footer>
+
+    <script>
+      // Highlight active TOC link on scroll
+      const sections = document.querySelectorAll('[id]');
+      const links = document.querySelectorAll('.toc-link');
+
+      window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach((s) => {
+          if (window.scrollY >= s.offsetTop - 80) current = s.id;
+        });
+        links.forEach((l) => {
+          l.classList.remove('active');
+          if (l.getAttribute('href') === '#' + current)
+            l.classList.add('active');
+        });
+      });
+    </script>
+  </body>
+</html>
